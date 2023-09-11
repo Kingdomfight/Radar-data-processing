@@ -3,18 +3,18 @@ classdef radarAlgorithm < matlab.System
 
     % Public, tunable properties
     properties
-        radius          %Radius of protected zone
-        angleThreshold  %Meximum angle error before new obstacle is created
-        maxObst               %Maximum amount of obstacles
+        radius              %Radius of protected zone
+        distanceThreshold   %Meximum distance error before new obstacle is created
     end
 
     properties (DiscreteState)
-        z       %Error distances for all obstacles
         count   %Number of tracked obstacles
 
         %Obstacle properties
         Px      %location
         Py      %location
+        Lastx   %Last detected location
+        Lasty   %Last detected location
         Vx       %velocity
         Vy       %velocity
         t_old   %Time of last detection
@@ -28,80 +28,82 @@ classdef radarAlgorithm < matlab.System
         function setupImpl(obj)
             %Initialize variables
             obj.count = 0;
-            obj.z = 3:10;
-            obj.Px = 1:8;
-            obj.Py = 1:8;
-            obj.Vx = 1:8;
-            obj.Vy = 1:8;
-            obj.t_old = 1:8;
+            obj.Px = zeros(1,8);
+            obj.Py = zeros(1,8);
+            obj.Lastx = zeros(1,8);
+            obj.Lasty = zeros(1,8);
+            obj.Vx = zeros(1,8);
+            obj.Vy = zeros(1,8);
+            obj.t_old = zeros(1,8);
         end
 
         function [warning, n, pointX, pointY] = stepImpl(obj, angle, distance)
             %Get simulation time
             time = getCurrentTime(obj);
-
-            %Convert euclidian values to carthesian values
-            Pnew.x = distance*cosd(angle);
-            Pnew.y = distance*sind(angle);
+            dt = time - obj.t_old;
+            z = zeros(1,8);
 
             %Update position of all objects
-            for h = 1:obj.count
-                dt = time - obj.t_old(h);
-                obj.Px = obj.Vx*dt + obj.Px(h);
-                obj.Py = obj.Vy*dt + obj.Py(h);
-            end
+            obj.Px = obj.Vx.*dt + obj.Lastx;
+            obj.Py = obj.Vy.*dt + obj.Lasty;
 
-            %Check distance to Pnew for all tracked obstacles
-            obj.z = 3:10;
-            obj.z(:) = 1000000;
-            for i = 1:obj.count
-                obj.z(i) = sqrt((obj.Px(i)-Pnew.x)^2 + (obj.Py(i)-Pnew.x)^2);
-            end
-
-            %Match point to closest obstacle
-            %If distance >= 3 create a new obstacle
             if distance > 0
-                [diff, zidx] = min(obj.z(1:8));
-                if (diff < obj.angleThreshold & obj.count > 0)
-                    dt = time - obj.t_old(zidx);
-                    obj.Vx(zidx) = (Pnew.x - obj.Px(zidx))/dt;
-                    obj.Vy(zidx) = (Pnew.y - obj.Py(zidx))/dt;
+                %Convert euclidian values to carthesian values
+                Pnew.x = distance*cos(angle*pi/180);
+                Pnew.y = distance*sin(angle*pi/180);
 
-                    obj.Px(zidx) = Pnew.x;
-                    obj.Py(zidx) = Pnew.y;
-
-                    obj.t_old(zidx) = time;
-                elseif obj.count < 8
-                    obj.count = obj.count + 1;
-                    obj.Px(obj.count) = Pnew.x;
-                    obj.Py(obj.count) = Pnew.y;
-                    obj.Vx(obj.count) = 0;
-                    obj.Vy(obj.count) = 0;
-                    obj.t_old(obj.count) = time;
+                if obj.count == 0
+                    obj.Px(1) = Pnew.x;
+                    obj.Py(1) = Pnew.y;
+                    obj.Lastx(1) = Pnew.x;
+                    obj.Lasty(1) = Pnew.y;
+                    obj.t_old(1) = time;
+                    obj.count = 1;
+                else
+                    %Check distance to Pnew for all tracked obstacles
+                    a = Pnew.x-obj.Px;
+                    b = Pnew.y-obj.Py;
+                    z = sqrt(a.^2 + b.^2);
+                    
+                    %Match point to closest obstacle
+                    %If distance >= 3 create a new obstacle
+                    [diff, zidx] = min(z(1:obj.count));
+                    if (diff < obj.distanceThreshold)
+                        obj.Vx(zidx) = (Pnew.x - obj.Lastx(zidx))/dt(zidx);
+                        obj.Vy(zidx) = (Pnew.y - obj.Lasty(zidx))/dt(zidx);
+                        obj.Px(zidx) = Pnew.x;
+                        obj.Py(zidx) = Pnew.y;
+                        obj.Lastx(zidx) = Pnew.x;
+                        obj.Lasty(zidx) = Pnew.y;
+                        obj.t_old(zidx) = time;
+                    elseif obj.count < 8
+                        obj.count = obj.count + 1;
+                        obj.Px(obj.count) = Pnew.x;
+                        obj.Py(obj.count) = Pnew.y;
+                        obj.Lastx(obj.count) = Pnew.x;
+                        obj.Lasty(obj.count) = Pnew.y;
+                        obj.Vx(obj.count) = 0;
+                        obj.Vy(obj.count) = 0;
+                        obj.t_old(obj.count) = time;
+                    end
                 end
             end
 
             %Check if any obstacles come into protection zone
             % within 5 seconds
-            warning = 0;
-            for j = 1:obj.count
-                if checkCollision(obj.Px(j), obj.Py(j), obj.Vx(j), obj.Vy(j), obj.radius)
-                    warning = 1;
-                    break;
-                end
+            ret = zeros(1,8);
+            for i = 1:obj.count
+                ret(i) = checkCollision(obj.Px(i), obj.Py(i), obj.Vx(i), obj.Vy(i), obj.radius);
+            end
+            if any(ret)
+                warning = 1;
+            else
+                warning = 0;
             end
 
             n = obj.count;
-            pointX = zeros(1, 8);
-            pointY = zeros(1, 8);
-            pointX(1:obj.count) = obj.Px(1:obj.count);
-            pointY(1:obj.count) = obj.Py(1:obj.count);
-        end
-
-        function [Px,Py] = predictPosition(Px,Py,Vx,Vy,t_old,time)
-            dt = time - t_old;
-            Px = Vx*dt + Px;
-            Py = Vy*dt + Py;
+            pointX = obj.Px;
+            pointY = obj.Py;
         end
 
         function [sz,dt,cp] = getDiscreteStateSpecificationImpl(~,name)
@@ -112,6 +114,12 @@ classdef radarAlgorithm < matlab.System
                 case 'Py'
                     sz = [1 8];
                     dt = 'double';
+                case 'Lastx'
+                    sz = [1 8];
+                    dt = 'double';
+                case 'Lasty'
+                    sz = [1 8];
+                    dt = 'double';
                 case 'Vx'
                     sz = [1 8];
                     dt = 'double';
@@ -119,9 +127,6 @@ classdef radarAlgorithm < matlab.System
                     sz = [1 8];
                     dt = 'double';
                 case 't_old'
-                    sz = [1 8];
-                    dt = 'double';
-                case 'z'
                     sz = [1 8];
                     dt = 'double';
                 case 'count'
@@ -161,8 +166,14 @@ classdef radarAlgorithm < matlab.System
 
         function resetImpl(obj)
             % Initialize / reset discrete-state properties
-            obj.z = 3:10;
             obj.count = 0;
+            obj.Px = zeros(1,8);
+            obj.Py = zeros(1,8);
+            obj.Lastx = zeros(1,8);
+            obj.Lasty = zeros(1,8);
+            obj.Vx = zeros(1,8);
+            obj.Vy = zeros(1,8);
+            obj.t_old = zeros(1,8);
         end
     end
 end
