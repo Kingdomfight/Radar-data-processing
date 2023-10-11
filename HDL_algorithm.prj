@@ -106,7 +106,6 @@
     <param.hdl.InlineConfigurations>true</param.hdl.InlineConfigurations>
     <param.hdl.VHDLLibraryName>work</param.hdl.VHDLLibraryName>
     <param.hdl.UseRisingEdge>false</param.hdl.UseRisingEdge>
-    <param.hdl.UseMatrixTypesInHDL>false</param.hdl.UseMatrixTypesInHDL>
     <param.hdl.HDLCodingStandard>option.hdl.None</param.hdl.HDLCodingStandard>
     <var.HDLCodingStandard_FilterPassingRules_enable>false</var.HDLCodingStandard_FilterPassingRules_enable>
     <var.HDLCodingStandard_DetectDuplicateNamesCheck_enable>true</var.HDLCodingStandard_DetectDuplicateNamesCheck_enable>
@@ -150,6 +149,7 @@
     <param.hdl.ClockEnableOutputPort>ce_out</param.hdl.ClockEnableOutputPort>
     <param.hdl.ScalarizePorts>option.hdl.off</param.hdl.ScalarizePorts>
     <param.hdl.IOThreshold>5000</param.hdl.IOThreshold>
+    <param.hdl.TreatIOThresholdAs>option.hdl.Error</param.hdl.TreatIOThresholdAs>
     <param.hdl.MapPersistentVarsToRAM>true</param.hdl.MapPersistentVarsToRAM>
     <param.hdl.RAMThreshold>256</param.hdl.RAMThreshold>
     <param.hdl.MapPipelineDelaysToRAM>false</param.hdl.MapPipelineDelaysToRAM>
@@ -184,8 +184,8 @@
     <param.hdl.SamplesPerCycle>1</param.hdl.SamplesPerCycle>
     <param.hdl.InputFIFOSize>10</param.hdl.InputFIFOSize>
     <param.hdl.OutputFIFOSize>10</param.hdl.OutputFIFOSize>
-    <param.hdl.MoveLargeDelaysToMemory>false</param.hdl.MoveLargeDelaysToMemory>
-    <param.hdl.DelaySizeThreshold>1024</param.hdl.DelaySizeThreshold>
+    <param.hdl.InputProcessingOrder>option.hdl.RowMajor</param.hdl.InputProcessingOrder>
+    <param.hdl.DelaySizeThreshold>100000000</param.hdl.DelaySizeThreshold>
     <param.hdl.InitializeBlockRAM>true</param.hdl.InitializeBlockRAM>
     <param.hdl.RAMArchitecture>option.hdl.EnabledRAM</param.hdl.RAMArchitecture>
     <param.hdl.PartitionFunctions>false</param.hdl.PartitionFunctions>
@@ -229,6 +229,8 @@
     <param.hdl.ComplexRealPostfix>_re</param.hdl.ComplexRealPostfix>
     <param.hdl.ComplexImagPostfix>_im</param.hdl.ComplexImagPostfix>
     <param.hdl.ReservedWordPostfix>_rsvd</param.hdl.ReservedWordPostfix>
+    <param.hdl.IOThreshold>5000</param.hdl.IOThreshold>
+    <param.hdl.TreatIOThresholdAs>option.hdl.Error</param.hdl.TreatIOThresholdAs>
     <param.hdl.MapPersistentVarsToRAM>true</param.hdl.MapPersistentVarsToRAM>
     <param.hdl.RAMThreshold>256</param.hdl.RAMThreshold>
     <param.hdl.RAMVariableNames />
@@ -387,7 +389,6 @@
       <param.hdl.InlineConfigurations />
       <param.hdl.VHDLLibraryName />
       <param.hdl.UseRisingEdge />
-      <param.hdl.UseMatrixTypesInHDL />
       <param.hdl.HDLCodingStandard />
       <var.HDLCodingStandard_FilterPassingRules_enable />
       <var.HDLCodingStandard_DetectDuplicateNamesCheck_enable />
@@ -431,6 +432,7 @@
       <param.hdl.ClockEnableOutputPort />
       <param.hdl.ScalarizePorts />
       <param.hdl.IOThreshold />
+      <param.hdl.TreatIOThresholdAs />
       <param.hdl.MapPersistentVarsToRAM />
       <param.hdl.RAMThreshold />
       <param.hdl.MapPipelineDelaysToRAM />
@@ -465,7 +467,7 @@
       <param.hdl.SamplesPerCycle />
       <param.hdl.InputFIFOSize />
       <param.hdl.OutputFIFOSize />
-      <param.hdl.MoveLargeDelaysToMemory />
+      <param.hdl.InputProcessingOrder />
       <param.hdl.DelaySizeThreshold />
       <param.hdl.InitializeBlockRAM />
       <param.hdl.RAMArchitecture />
@@ -583,7 +585,7 @@
       <step key="category.workflow.fpgaturnkeyprogramtargetdevice" skipped="false" />
     </workflow>
     <matlab>
-      <root>C:\Program Files\MATLAB\R2022b</root>
+      <root>C:\Program Files\MATLAB\R2023a</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
         <toolbox name="embeddedcoder" />
