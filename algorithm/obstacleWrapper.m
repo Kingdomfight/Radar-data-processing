@@ -20,11 +20,11 @@ classdef obstacleWrapper < matlab.System
 			% Perform one-time calculations, such as computing constants
 		end
 
-		function [Px, Py, Vx, Vy, Active] = stepImpl(obj, t, newX, newY, detected)
-			% Implement algorithm. Calculate y as a function of input u and
-			% discrete states.
+		function [obstaclesOut] = stepImpl(obj, newX, newY, detected, t)
 			for k = 1:8
-				[Px(k), Py(k), Vx(k), Vy(k), Active(k)] = obj.o(k).step(t(k), newX(k), newY(k), detected(k));
+				[obstacleOut.Px, obstacleOut.Py, obstacleOut.Vx, obstacleOut.Vy, obstacleOut.Active] ...
+					= obj.o.step(t, newX(k), newY(k), bitget(detected, k));
+				obstaclesOut(k) = obstacleOut;
 			end
 		end
 
