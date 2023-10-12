@@ -1,65 +1,74 @@
 classdef obstacleTracker < matlab.System
-    % The obstacleTracker system object can continuously keep track of a
-    % singal obstacle, updating position based on velocity and updating
-    % velocity based on newly detected position.
-    %
-    % This template includes the minimum set of functions required
-    % to define a System object with discrete state.
+	% The obstacleTracker system object can continuously keep track of a
+	% singal obstacle, updating position based on velocity and updating
+	% velocity based on newly detected position.
+	%
+	% This template includes the minimum set of functions required
+	% to define a System object with discrete state.
 
-    % Public, tunable properties
-    properties
-        Px
-        Py
-        Vx
-        Vy
-        lastDetectedTime
-        lastStepTime
-        Active
-    end
+	% Public, tunable properties
+	properties
 
-    properties (DiscreteState)
+	end
 
-    end
+	properties (DiscreteState)
+		Px
+		Py
+		PxExt
+		PyExt
+		Vx
+		Vy
+		lastDetectedTime
+		lastStepTime
+		Active
+	end
 
-    % Pre-computed constants
-    properties (Access = private)
+	% Pre-computed constants
+	properties (Access = private)
 
-    end
+	end
 
-    methods (Access = protected)
-        function setupImpl(obj)
-            % Perform one-time calculations, such as computing constants
-            obj.lastDetectedTime = 0;
-            obj.lastStepTime = 0;
-            obj.Active = false;
-        end
+	methods (Access = protected)
+		function setupImpl(~)
+			% Perform one-time calculations, such as computing constants
+		end
 
-        function [Px, Py, Vx, Vy, Active] = stepImpl(obj, t, newX, newY, detected)
-            % Implement algorithm. Calculate y as a function of input u and
-            % discrete states.
-            if ~detected
-                obj.Active = true;
-                dt = t-obj.lastStepTime;
-                obj.Px = obj.Px + obj.Vx*dt;
-                obj.Py = obj.Py + obj.Vy*dt;
-            else
-                dt = t-obj.lastDetectedTime;
-                obj.Vx = (newX - obj.Px) / dt;
-                obj.Vy = (newY - obj.Py) / dt;
-                obj.Px = newX;
-                obj.Py = newY;
-                obj.lastDetectedTime = t;
-            end
-            Px = obj.Px;
-            Py = obj.Py;
-            Vx = obj.Vx;
-            Vy = obj.Vy;
-            obj.lastStepTime = t;
-            Active = obj.Active;
-        end
+		function [Px, Py, Vx, Vy, Active] = stepImpl(obj, t, newX, newY, detected)
+			% Implement algorithm. Calculate y as a function of input u and
+			% discrete states.
+			if detected
+				if obj.Active
+					obj.Vx = (newX-obj.x)/(t-obj.lastDetectedTime);
+					obj.Vy = (newX-obj.y)/(t-obj.lastDetectedTime);
+				end
+				obj.Px, obj.PxExt = newX;
+				obj.Py, obj.PyExt = newY;
+				obj.Active = true;
+				obj.lastDetectedTime = t;
+			elseif obj.Active
+				obj.PxExt = obj.PxExt + obj.Vx*(t-obj.lastStepTime);
+				obj.PyExt = obj.PyExt + obj.Vy*(t-obj.lastStepTime);
+			end
 
-        function resetImpl(obj)
-            % Initialize / reset discrete-state properties
-        end
-    end
+			Px = obj.PxExt;
+			Py = obj.PyExt;
+			Vx = obj.Vx;
+			Vy = obj.Vy;
+			obj.lastStepTime = t;
+			Active = obj.Active;
+		end
+
+		function resetImpl(obj)
+			% Initialize / reset discrete-state properties
+			obj.Px = 0;
+			obj.Py = 0;
+			obj.PxExt = 0;
+			obj.PyExt = 0;
+			obj.Vx = 0;
+			obj.Vy = 0;
+			obj.lastDetectedTime = 0;
+			obj.lastStepTime = 0;
+			obj.Active = false;
+		end
+	end
 end
