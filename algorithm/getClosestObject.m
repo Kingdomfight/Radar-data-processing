@@ -1,10 +1,8 @@
 classdef getClosestObject < matlab.System
 	% System object to calculate which input object P(1)...P(n) is closest to
 	% input object F. Input n controls how many objects P need to be
-	% checked. Output C is the index of the closest object P.
-	%
-	% This template includes the minimum set of functions required
-	% to define a System object with discrete state.
+	% checked. Output C uses one-hot encoding to indicate the closest P object.
+	% If there are no active P objects C is 0.
 
 	% Public, tunable properties
 	properties
@@ -35,7 +33,8 @@ classdef getClosestObject < matlab.System
 				dx = [onObjects.Px]-F.x;
 				dy = [onObjects.Py]-F.y;
 				obstacleDistance = sqrt(dx.^2+dy.^2);
-				[~, C] = min(obstacleDistance);
+				[~, index] = min(obstacleDistance);
+				C = bitshift(1, index-1);
 			end
 		end
 
