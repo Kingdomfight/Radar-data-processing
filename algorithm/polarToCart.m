@@ -1,40 +1,40 @@
 classdef polarToCart < matlab.System
-    % System object to convert polar coordinates (angle & distance) to
-    % cartesian coordinates (x & y) for a 2D plane.
-    %
-    % Input angle is in degrees
-    %
-    % This template includes the minimum set of functions required
-    % to define a System object with discrete state.
+	% System object to convert polar coordinates (angle & distance) to
+	% cartesian coordinates (x & y) for a 2D plane.
+	%
+	% Input angle is in degrees
+	%
+	% This template includes the minimum set of functions required
+	% to define a System object with discrete state.
 
-    % Public, tunable properties
-    properties
-        
-    end
+	% Public, tunable properties
+	properties
 
-    properties (DiscreteState)
+	end
 
-    end
+	properties (DiscreteState)
 
-    % Pre-computed constants
-    properties (Access = private)
+	end
 
-    end
+	% Pre-computed constants
+	properties (Access = private)
 
-    methods (Access = protected)
-        function setupImpl(~)
-            % Perform one-time calculations, such as computing constants
-        end
+	end
 
-        function [x, y] = stepImpl(~, angle, distance)
-            % Implement algorithm. Calculate y as a function of input u and
-            % discrete states.
-            x = cosd(angle)*distance;
-            y = sind(angle)*distance;
-        end
+	methods (Access = protected)
+		function setupImpl(~)
+			% Perform one-time calculations, such as computing constants
+		end
 
-        function resetImpl(~)
-            % Initialize / reset discrete-state properties
-        end
-    end
+		function [x, y] = stepImpl(~, angle, distance)
+			% Implement algorithm. Calculate y as a function of input u and
+			% discrete states.
+			x = cosd(angle)*distance;
+			y = sind(angle)*distance;
+		end
+
+		function resetImpl(~)
+			% Initialize / reset discrete-state properties
+		end
+	end
 end
