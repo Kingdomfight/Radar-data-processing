@@ -29,3 +29,15 @@ function testQuadrant4(testCase)
 	expOut = [sqrt(2)/2 -sqrt(2)/2];
 	verifyEqual(testCase, actOut, expOut);
 end
+
+function testAngle2Small(testCase)
+	verifyError(testCase, @() testCase.TestData.dut(-1, 1), 'polarToCart:InputOutOfRange')
+end
+
+function testAngle2Large(testCase)
+	verifyError(testCase, @() testCase.TestData.dut(360, 1), 'polarToCart:InputOutOfRange')
+end
+
+function testDistanceNegative(testCase)
+	verifyError(testCase, @() testCase.TestData.dut(45, -1), 'polarToCart:InputOutOfRange')
+end
