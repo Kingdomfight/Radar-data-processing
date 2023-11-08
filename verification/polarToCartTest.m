@@ -1,10 +1,31 @@
 function tests = polarToCartTest
-    tests = functiontests(localfunctions);
+	tests = functiontests(localfunctions);
 end
 
-% example test
-% function testRealSolution(testCase)
-%     actSolution = quadraticSolver(1,-3,2);
-%     expSolution = [2 1];
-%     verifyEqual(testCase,actSolution,expSolution)
-% end
+function setup(testCase)
+	testCase.TestData.dut = polarToCart();
+end
+
+function testQuadrant1(testCase)
+	[actOut(1), actOut(2)] = testCase.TestData.dut(45, 1);
+	expOut = [sqrt(2)/2 sqrt(2)/2];
+	verifyEqual(testCase, actOut, expOut);
+end
+
+function testQuadrant2(testCase)
+	[actOut(1), actOut(2)] = testCase.TestData.dut(135, 1);
+	expOut = [-sqrt(2)/2 sqrt(2)/2];
+	verifyEqual(testCase, actOut, expOut);
+end
+
+function testQuadrant3(testCase)
+	[actOut(1), actOut(2)] = testCase.TestData.dut(225, 1);
+	expOut = [-sqrt(2)/2 -sqrt(2)/2];
+	verifyEqual(testCase, actOut, expOut);
+end
+
+function testQuadrant4(testCase)
+	[actOut(1), actOut(2)] = testCase.TestData.dut(315, 1);
+	expOut = [sqrt(2)/2 -sqrt(2)/2];
+	verifyEqual(testCase, actOut, expOut);
+end
