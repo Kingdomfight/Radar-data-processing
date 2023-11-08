@@ -2,7 +2,7 @@ classdef polarToCart < matlab.System
 	% System object to convert polar coordinates (angle & distance) to
 	% cartesian coordinates (x & y) for a 2D plane.
 	%
-	% Input angle is in degrees (0-359)
+	% Input angle is in degrees (0 <= degrees < 360)
 	% Input distance is nonnegative
 	%
 	% This template includes the minimum set of functions required
@@ -30,6 +30,16 @@ classdef polarToCart < matlab.System
 		function [x, y] = stepImpl(~, angle, distance)
 			% Implement algorithm. Calculate y as a function of input u and
 			% discrete states.
+
+			% Input checking
+			if (angle < 0 || angle >= 360)
+				error('polarToCart:InputOutOfRange', ...
+					'Angle must be >=0 and <360.')
+			elseif (distance < 0)
+				error('polarToCart:InputOutOfRange', ...
+					'Distance must be nonnegative');
+			end
+
 			x = cosd(angle)*distance;
 			y = sind(angle)*distance;
 		end
