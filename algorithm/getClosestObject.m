@@ -45,13 +45,14 @@ classdef getClosestObject < matlab.System
 			% Get tracked obstacles
 			trackedObs = trackedObs(arrayfun(obj.condition, trackedObs));
 
-			c = uint8(0);
-			if size(trackedObs) ~= 0
+			if size(trackedObs, 2) == 0
+				c = uint8(0);
+			else
 				dx = [trackedObs.pxExt]-detectObs.px;
 				dy = [trackedObs.pyExt]-detectObs.py;
 				obstacleDistance = sqrt(dx.^2+dy.^2);
 				[~, index] = min(obstacleDistance);
-				c = bitshift(1, index-1);
+				c = bitshift(uint8(1), index-1);
 			end
 		end
 

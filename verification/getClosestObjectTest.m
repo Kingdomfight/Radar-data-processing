@@ -32,3 +32,22 @@ function test2ManyObjects(testCase)
 	functionHandle = @() testCase.TestData.dut(tracked, detect);
 	verifyError(testCase, functionHandle, 'getClosestObject:InputIncorrectDimensions');
 end
+
+function testClosestObject(testCase)
+	% Generate consistent random input data
+	inputSize = testCase.TestData.dut.MAX_INPUT_OBSTACLES;
+	rng("default")
+	inputDistances = randperm(inputSize);
+	distanceSquares = num2cell(sqrt(inputDistances));
+	tracked = struct('tracking', true, 'pxExt', distanceSquares, 'pyExt', distanceSquares);
+	detect = struct('px', 0, 'py', 0);
+
+	% Run function
+	actOutput = testCase.TestData.dut(tracked, detect);
+
+	% Calculate expected output
+	[~, minDistIdx] = min(inputDistances);
+	expOutput = bitshift(uint8(1), minDistIdx-1);
+
+	verifyEqual(testCase, actOutput, expOutput);
+end
