@@ -1,8 +1,15 @@
 classdef getClosestObject < matlab.System
-	% System object to calculate which input object P(1)...P(n) is closest to
-	% input object F. Input n controls how many objects P need to be
-	% checked. Output C uses one-hot encoding to indicate the closest P object.
-	% If there are no active P objects C is 0.
+	% System object to calculate which tracked obstacle from input array trackedObs
+	% is closest to input obstacle detectObs.
+	% Input trackedObs is an array of structs containing at least the following fields:
+	%   tracking: logical type used to check if obstacle is being tracked or not.
+	%   pxExt: extrapolated x coordinate.
+	%   pyExt: extrapolated y coordinate.
+	% Input detectObs is a struct containing at elast the following fields:
+	%   px: x coordinate of detected obstacle
+	%   py: y coordinate of detected obstacle
+	% Output c uses one-hot encoding to indicate the closest obstacle in trackedObs.
+	% If there are no tracked obstacles in trackedObs, c is 0.
 
 	% Public, tunable properties
 	properties
@@ -23,18 +30,18 @@ classdef getClosestObject < matlab.System
 			% Perform one-time calculations, such as computing constants
 		end
 
-		function C = stepImpl(obj, P, F)
-			% Get active obstacles
-			onObjects = P(arrayfun(obj.condition, P));
+		function c = stepImpl(obj, trackedObs, detectObs)
+			% Get tracked obstacles
+			trackedObs = trackedObs(arrayfun(obj.condition, trackedObs));
 
-			if size(onObjects) == 0
-				C = 0;
+			if size(trackedObs) == 0
+				c = 0;
 			else
-				dx = [onObjects.Px]-F.x;
-				dy = [onObjects.Py]-F.y;
+				dx = [trackedObs.pxExt]-detectObs.px;
+				dy = [trackedObs.pyExt]-detectObs.py;
 				obstacleDistance = sqrt(dx.^2+dy.^2);
 				[~, index] = min(obstacleDistance);
-				C = bitshift(1, index-1);
+				c = bitshift(1, index-1);
 			end
 		end
 
