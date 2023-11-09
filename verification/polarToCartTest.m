@@ -30,14 +30,17 @@ function testQuadrant4(testCase)
 	verifyEqual(testCase, actOut, expOut);
 end
 
+% Test first too small angle
 function testAngle2Small(testCase)
-	verifyError(testCase, @() testCase.TestData.dut(-1, 1), 'polarToCart:InputOutOfRange')
+	verifyError(testCase, @() testCase.TestData.dut(-eps, 1), 'polarToCart:InputOutOfRange')
 end
 
+% Test first too large angle
 function testAngle2Large(testCase)
 	verifyError(testCase, @() testCase.TestData.dut(360, 1), 'polarToCart:InputOutOfRange')
 end
 
+% Test first negative distance
 function testDistanceNegative(testCase)
-	verifyError(testCase, @() testCase.TestData.dut(45, -1), 'polarToCart:InputOutOfRange')
+	verifyError(testCase, @() testCase.TestData.dut(45, -eps), 'polarToCart:InputOutOfRange')
 end
