@@ -13,6 +13,6 @@ function test0Objects(testCase)
 	detect.px = 0;
 	detect.py = 0;
 	actOutput = testCase.TestData.dut(tracked, detect);
-	expOutput = 0;
+	expOutput = uint8(0);
 	verifyEqual(testCase, actOutput, expOutput);
 end

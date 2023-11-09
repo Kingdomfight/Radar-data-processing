@@ -1,15 +1,16 @@
 classdef getClosestObject < matlab.System
 	% System object to calculate which tracked obstacle from input array trackedObs
 	% is closest to input obstacle detectObs.
-	% Input trackedObs is an array of structs containing at least the following fields:
+	% Input trackedObs is an vector of MAX_INPUT_OBSTACLES structs containing at
+	% least the following fields:
 	%   tracking: logical type used to check if obstacle is being tracked or not.
 	%   pxExt: extrapolated x coordinate.
 	%   pyExt: extrapolated y coordinate.
 	% Input detectObs is a struct containing at elast the following fields:
 	%   px: x coordinate of detected obstacle
 	%   py: y coordinate of detected obstacle
-	% Output c uses one-hot encoding to indicate the closest obstacle in trackedObs.
-	% If there are no tracked obstacles in trackedObs, c is 0.
+	% Output c of type uint8 uses one-hot encoding to indicate the closest obstacle
+	% in trackedObs. If there are no tracked obstacles in trackedObs, c is 0.
 
 	% Public, tunable properties
 	properties
@@ -23,6 +24,7 @@ classdef getClosestObject < matlab.System
 	% Pre-computed constants
 	properties (Access = private)
 		condition = @(obj) obj.tracking;
+		MAX_INPUT_OBSTACLES = 8;
 	end
 
 	methods (Access = protected)
@@ -31,11 +33,17 @@ classdef getClosestObject < matlab.System
 		end
 
 		function c = stepImpl(obj, trackedObs, detectObs)
+			% Input checking
+			if (size(trackedObs) > obj.MAX_INPUT_OBSTACLES)
+				error('getClosestObject:InputIncorrectDimension', ...
+					'trackedObs must be a vector of at most 8 elements')
+			end
+
 			% Get tracked obstacles
 			trackedObs = trackedObs(arrayfun(obj.condition, trackedObs));
 
 			if size(trackedObs) == 0
-				c = 0;
+				c = uint8(0);
 			else
 				dx = [trackedObs.pxExt]-detectObs.px;
 				dy = [trackedObs.pyExt]-detectObs.py;
