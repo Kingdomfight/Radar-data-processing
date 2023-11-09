@@ -24,6 +24,9 @@ classdef getClosestObject < matlab.System
 	% Pre-computed constants
 	properties (Access = private)
 		condition = @(obj) obj.tracking;
+	end
+
+	properties (Constant = true)
 		MAX_INPUT_OBSTACLES = 8;
 	end
 
@@ -42,9 +45,8 @@ classdef getClosestObject < matlab.System
 			% Get tracked obstacles
 			trackedObs = trackedObs(arrayfun(obj.condition, trackedObs));
 
-			if size(trackedObs) == 0
-				c = uint8(0);
-			else
+			c = uint8(0);
+			if size(trackedObs) ~= 0
 				dx = [trackedObs.pxExt]-detectObs.px;
 				dy = [trackedObs.pyExt]-detectObs.py;
 				obstacleDistance = sqrt(dx.^2+dy.^2);
