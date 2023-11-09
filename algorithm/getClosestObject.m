@@ -37,8 +37,8 @@ classdef getClosestObject < matlab.System
 
 		function c = stepImpl(obj, trackedObs, detectObs)
 			% Input checking
-			if (size(trackedObs) > obj.MAX_INPUT_OBSTACLES)
-				error('getClosestObject:InputIncorrectDimension', ...
+			if (size(trackedObs, 2) > obj.MAX_INPUT_OBSTACLES)
+				error('getClosestObject:InputIncorrectDimensions', ...
 					'trackedObs must be a vector of at most 8 elements')
 			end
 
