@@ -22,7 +22,7 @@ classdef getClosestObject < matlab.System
 
 	% Pre-computed constants
 	properties (Access = private)
-		condition = @(obj) obj.Active;
+		condition = @(obj) obj.tracking;
 	end
 
 	methods (Access = protected)
