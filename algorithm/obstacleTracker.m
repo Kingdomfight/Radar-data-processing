@@ -41,8 +41,8 @@ classdef obstacleTracker < matlab.System
 					obj.Vx = (newX-obj.x)/(t-obj.lastDetectedTime);
 					obj.Vy = (newX-obj.y)/(t-obj.lastDetectedTime);
 				end
-				obj.Px, obj.PxExt = newX;
-				obj.Py, obj.PyExt = newY;
+				obj.Px = newX; obj.PxExt = newX;
+				obj.Py = newY; obj.PyExt = newY;
 				obj.Active = true;
 				obj.lastDetectedTime = t;
 			elseif obj.Active
