@@ -30,6 +30,13 @@ function testQuadrant4(testCase)
 	verifyEqual(testCase, actOut, expOut);
 end
 
+function testDistance(testCase)
+	distance = 8.756; % random
+	[actOut(1), actOut(2)] = testCase.TestData.dut(0, distance);
+	expOut = [distance 0];
+	verifyEqual(testCase, actOut, expOut);
+end
+
 % Test first too small angle
 function testAngle2Small(testCase)
 	verifyError(testCase, @() testCase.TestData.dut(-eps, 1), 'polarToCart:InputOutOfRange')
