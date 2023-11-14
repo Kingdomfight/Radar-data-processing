@@ -17,3 +17,18 @@ function testDetectedNotActive(testCase)
 	expOutput = {1, 2, 0, 0, true};
 	verifyEqual(testCase, actOutput, expOutput)
 end
+
+function testDetectedActive(testCase)
+	startX = 1;
+	startY = 2;
+	vX = 3;
+	vY = 4;
+	dt = 0.5;
+	[actOutput{1}{1:5}] = testCase.TestData.dut(0, startX, startY, true);
+	newX = startX+vX*dt;
+	newY = startY+vY*dt;
+	[actOutput{2}{1:5}] = testCase.TestData.dut(dt, newX, newY, true);
+	expOutput{1} = {startX, startY, 0, 0, true};
+	expOutput{2} = {newX, newY, vX, vY, true};
+	verifyEqual(testCase, actOutput, expOutput)
+end
