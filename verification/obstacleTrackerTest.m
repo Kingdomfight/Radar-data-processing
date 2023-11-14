@@ -19,16 +19,22 @@ function testDetectedNotActive(testCase)
 end
 
 function testDetectedActive(testCase)
-	startX = 1;
-	startY = 2;
-	vX = 3;
-	vY = 4;
 	dt = 0.5;
-	[actOutput{1}{1:5}] = testCase.TestData.dut(0, startX, startY, true);
-	newX = startX+vX*dt;
-	newY = startY+vY*dt;
-	[actOutput{2}{1:5}] = testCase.TestData.dut(dt, newX, newY, true);
-	expOutput{1} = {startX, startY, 0, 0, true};
-	expOutput{2} = {newX, newY, vX, vY, true};
+	vX(1:2) = [3 -2];
+	vY(1:2) = [4 -6];
+	x(1) = 1; y(1) = 2;
+
+	x(2) = x(1)+vX(1)*dt;
+	y(2) = y(1)+vY(1)*dt;
+	x(3) = x(2)+vX(2)*dt;
+	y(3) = y(2)+vY(2)*dt;
+
+	[actOutput{1}{1:5}] = testCase.TestData.dut(0, x(1), y(1), true);
+	[actOutput{2}{1:5}] = testCase.TestData.dut(dt, x(2), y(2), true);
+	[actOutput{3}{1:5}] = testCase.TestData.dut(dt*2, x(3), y(3), true);
+
+	expOutput{1} = {x(1), y(1), 0, 0, true};
+	expOutput{2} = {x(2), y(2), vX(1), vY(1), true};
+	expOutput{3} = {x(3), y(3), vX(2), vY(2), true};
 	verifyEqual(testCase, actOutput, expOutput)
 end
