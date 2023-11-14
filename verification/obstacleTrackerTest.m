@@ -7,7 +7,7 @@ function setup(testCase)
 end
 
 function testNotDetectNotActive(testCase)
-	[actOutput(1:5)] = testCase.TestData.dut(0, 0, 0, false);
-	expOutput = [0 0 0 0 false];
+	[actOutput{1:5}] = testCase.TestData.dut(0, 0, 0, false);
+	expOutput = {0, 0, 0, 0, false};
 	verifyEqual(testCase, actOutput, expOutput)
 end

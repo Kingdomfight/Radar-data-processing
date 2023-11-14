@@ -7,33 +7,33 @@ function setup(testCase)
 end
 
 function testQuadrant1(testCase)
-	[actOut(1), actOut(2)] = testCase.TestData.dut(45, 1);
-	expOut = [sqrt(2)/2 sqrt(2)/2];
+	[actOut{1:2}] = testCase.TestData.dut(45, 1);
+	expOut = {sqrt(2)/2, sqrt(2)/2};
 	verifyEqual(testCase, actOut, expOut);
 end
 
 function testQuadrant2(testCase)
-	[actOut(1), actOut(2)] = testCase.TestData.dut(135, 1);
-	expOut = [-sqrt(2)/2 sqrt(2)/2];
+	[actOut{1:2}] = testCase.TestData.dut(135, 1);
+	expOut = {-sqrt(2)/2, sqrt(2)/2};
 	verifyEqual(testCase, actOut, expOut);
 end
 
 function testQuadrant3(testCase)
-	[actOut(1), actOut(2)] = testCase.TestData.dut(225, 1);
-	expOut = [-sqrt(2)/2 -sqrt(2)/2];
+	[actOut{1:2}] = testCase.TestData.dut(225, 1);
+	expOut = {-sqrt(2)/2, -sqrt(2)/2};
 	verifyEqual(testCase, actOut, expOut);
 end
 
 function testQuadrant4(testCase)
-	[actOut(1), actOut(2)] = testCase.TestData.dut(315, 1);
-	expOut = [sqrt(2)/2 -sqrt(2)/2];
+	[actOut{1:2}] = testCase.TestData.dut(315, 1);
+	expOut = {sqrt(2)/2, -sqrt(2)/2};
 	verifyEqual(testCase, actOut, expOut);
 end
 
 function testDistance(testCase)
 	distance = 8.756; % random
-	[actOut(1), actOut(2)] = testCase.TestData.dut(0, distance);
-	expOut = [distance 0];
+	[actOut{1:2}] = testCase.TestData.dut(0, distance);
+	expOut = {distance, 0};
 	verifyEqual(testCase, actOut, expOut);
 end
 
