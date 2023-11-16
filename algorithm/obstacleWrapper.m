@@ -7,7 +7,7 @@ classdef obstacleWrapper < matlab.System
 	end
 
 	properties (DiscreteState)
-		o;
+		obstacles;
 	end
 
 	% Pre-computed constants
@@ -20,19 +20,19 @@ classdef obstacleWrapper < matlab.System
 			% Perform one-time calculations, such as computing constants
 		end
 
-		function [obstaclesOut] = stepImpl(obj, detected, P, t)
+		function [obstaclesOut] = stepImpl(obj, detectIdx, detectPos, time)
 			obstaclesOut = zeros(1, 8);
-			for k = 1:8
-				[obstacleOut.Px, obstacleOut.Py, obstacleOut.Vx, obstacleOut.Vy, obstacleOut.Active] ...
-					= obj.o.step(t, P(k).x, P(k).y, bitget(detected, k));
+			for i = 1:8
+				[obstacleOut.px, obstacleOut.py, obstacleOut.vx, obstacleOut.vy, obstacleOut.tracking] ...
+					= obj.obstacles.step(time, detectPos.px, detectPos.py, bitget(detectIdx, i));
 				obstaclesOut(k) = obstacleOut;
 			end
 		end
 
 		function resetImpl(obj)
 			% Initialize / reset discrete-state properties
-			for k = 1:8
-				obj.o(k) = obstacleTracker;
+			for i = 1:8
+				obj.obstacles(i) = obstacleTracker;
 			end
 		end
 	end
