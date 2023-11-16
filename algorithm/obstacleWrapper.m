@@ -21,6 +21,7 @@ classdef obstacleWrapper < matlab.System
 		end
 
 		function [obstaclesOut] = stepImpl(obj, detected, P, t)
+			obstaclesOut = zeros(1, 8);
 			for k = 1:8
 				[obstacleOut.Px, obstacleOut.Py, obstacleOut.Vx, obstacleOut.Vy, obstacleOut.Active] ...
 					= obj.o.step(t, P(k).x, P(k).y, bitget(detected, k));
