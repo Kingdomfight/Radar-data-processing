@@ -35,7 +35,7 @@ classdef obstacleWrapper < matlab.System
 
 		function [obstaclesOut] = stepImpl(obj, detectIdx, detectPos, time)
 			% Input checking
-			if (isa(detectIdx, 'uint8'))
+			if (~isa(detectIdx, 'uint8'))
 				error('obstacleWrapper:IncorrectInputType', ...
 					'obstacleWrapper input detectIdx must be of type uint8');
 			end
@@ -50,8 +50,9 @@ classdef obstacleWrapper < matlab.System
 
 		function resetImpl(obj)
 			% Initialize / reset discrete-state properties
+			obj.obstacles = cell(1, obj.NUM_OBSTACLE_TRACKER);
 			for i = 1:obj.NUM_OBSTACLE_TRACKER
-				obj.obstacles(i) = obstacleTracker;
+				obj.obstacles{i} = obstacleTracker;
 			end
 		end
 	end
