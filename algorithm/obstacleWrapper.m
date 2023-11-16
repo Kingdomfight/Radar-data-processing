@@ -34,6 +34,12 @@ classdef obstacleWrapper < matlab.System
 		end
 
 		function [obstaclesOut] = stepImpl(obj, detectIdx, detectPos, time)
+			% Input checking
+			if (isa(detectIdx, 'uint8'))
+				error('obstacleWrapper:IncorrectInputType', ...
+					'obstacleWrapper input detectIdx must be of type uint8');
+			end
+
 			obstaclesOut = zeros(1, obj.NUM_OBSTACLE_TRACKER);
 			for i = 1:obj.NUM_OBSTACLE_TRACKER
 				[obstacleOut.px, obstacleOut.py, obstacleOut.vx, obstacleOut.vy, obstacleOut.tracking] ...
