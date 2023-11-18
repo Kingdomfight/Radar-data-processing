@@ -38,6 +38,9 @@ classdef obstacleWrapper < matlab.System
 			if (~isa(detectIdx, 'uint8'))
 				error('obstacleWrapper:IncorrectInputType', ...
 					'obstacleWrapper input detectIdx must be of type uint8');
+			elseif (~ismember(detectIdx, [0 2.^(0:7)]))
+				error('obstacleWrapper:IncorrectInputValue', ...
+				'obstacleWrapper input detectIdx must be 0 or power of 2');
 			end
 
 			obstaclesOut = zeros(1, obj.NUM_OBSTACLE_TRACKER);
