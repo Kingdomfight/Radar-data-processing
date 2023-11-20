@@ -37,20 +37,25 @@ classdef zoneCheck < matlab.System
 		end
 
 		function warning = stepImpl(obj, obsState)
-			% Represent obstacle state vector as a line: y=ax+b
-			a = obsState.vy./obsState.vx;
-			b = obsState.py - obsState.px.*a;
-			% Calculate discriminant system of equations of line and 
-			% circle x^2+y^2=RADIUS^2
-			D = 4*((a*obj.RADIUS).^2 - b.^2 + obj.RADIUS^2);
+			% Check if obstacle already in zone
+			if (sqrt(obsState.px.^2 + obsState.py.^2) <= obj.RADIUS)
+				warning = true;
+			else
+				% Represent obstacle state vector as a line: y=ax+b
+				a = obsState.vy./obsState.vx;
+				b = obsState.py - obsState.px.*a;
+				% Calculate discriminant system of equations of line and 
+				% circle x^2+y^2=RADIUS^2
+				D = 4*((a*obj.RADIUS).^2 - b.^2 + obj.RADIUS^2);
 
-			x1 = (-2*a.*b + sqrt(D))./(2*a.^2 + 2);
-			x2 = (-2*a.*b - sqrt(D))./(2*a.^2 + 2);
-			t1 = (x1 - obsState.px)/obsState.vx;
-			t2 = (x2 - obsState.px)/obsState.vx;
+				x1 = (-2*a.*b + sqrt(D))./(2*a.^2 + 2);
+				x2 = (-2*a.*b - sqrt(D))./(2*a.^2 + 2);
+				t1 = (x1 - obsState.px)/obsState.vx;
+				t2 = (x2 - obsState.px)/obsState.vx;
 
-			warning = any((isreal(t1) && t1 < obj.TIME_THRESHOLD && t1 >= 0) ...
-			| (isreal(t2) && t2 < obj.TIME_THRESHOLD && t2 >= 0));
+				warning = any((isreal(t1) && t1 < obj.TIME_THRESHOLD && t1 >= 0) ...
+				| (isreal(t2) && t2 < obj.TIME_THRESHOLD && t2 >= 0));
+			end
 		end
 
 		function resetImpl(~)
