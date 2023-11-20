@@ -33,7 +33,7 @@ classdef obstacleWrapper < matlab.System
 			% Perform one-time calculations, such as computing constants
 		end
 
-		function [obstaclesOut] = stepImpl(obj, detectIdx, detectPos, time)
+		function obstaclesOut = stepImpl(obj, detectIdx, detectPos, time)
 			% Input checking
 			if (~isa(detectIdx, 'uint8'))
 				error('obstacleWrapper:IncorrectInputType', ...
@@ -43,11 +43,10 @@ classdef obstacleWrapper < matlab.System
 				'obstacleWrapper input detectIdx must be 0 or power of 2');
 			end
 
-			obstaclesOut = zeros(1, obj.NUM_OBSTACLE_TRACKER);
-			for i = 1:obj.NUM_OBSTACLE_TRACKER
+			for i = obj.NUM_OBSTACLE_TRACKER:-1:1
 				[obstacleOut.px, obstacleOut.py, obstacleOut.vx, obstacleOut.vy, obstacleOut.tracking] ...
-					= obj.obstacles.step(time, detectPos.px, detectPos.py, bitget(detectIdx, i));
-				obstaclesOut(k) = obstacleOut;
+					= obj.obstacles{i}.step(time, detectPos.px, detectPos.py, bitget(detectIdx, i));
+				obstaclesOut(i) = obstacleOut;
 			end
 		end
 
