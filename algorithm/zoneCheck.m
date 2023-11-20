@@ -42,7 +42,11 @@ classdef zoneCheck < matlab.System
 				warning = true;
 			else
 				% Represent obstacle state vector as a line: y=ax+b
-				a = obsState.vy./obsState.vx;
+				if (obsState.vx == 0 && obsState.vy == 0)
+					a = 0;
+				else
+					a = obsState.vy./obsState.vx;
+				end
 				b = obsState.py - obsState.px.*a;
 				% Calculate discriminant system of equations of line and 
 				% circle x^2+y^2=RADIUS^2

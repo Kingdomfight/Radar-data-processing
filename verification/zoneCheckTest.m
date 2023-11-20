@@ -57,3 +57,23 @@ function testObstacleMovingOutsideZone(testCase)
 	actOut = testCase.TestData.dut(input);
 	verifyEqual(testCase, actOut, false);
 end
+
+function testObstacleStationaryInsideZone(testCase)
+	px = 0;
+	py = 0;
+	vx = 0;
+	vy = 0;
+	input = struct('px', px, 'py', py, 'vx', vx, 'vy', vy, 'tracking', true);
+	actOut = testCase.TestData.dut(input);
+	verifyEqual(testCase, actOut, true);
+end
+
+function testObstacleStationaryOutsideZone(testCase)
+	px = testCase.TestData.dut.RADIUS*2;
+	py = testCase.TestData.dut.RADIUS*2;
+	vx = 0;
+	vy = 0;
+	input = struct('px', px, 'py', py, 'vx', vx, 'vy', vy, 'tracking', true);
+	actOut = testCase.TestData.dut(input);
+	verifyEqual(testCase, actOut, false);
+end
