@@ -37,3 +37,13 @@ function testObstacleMovingVerticallyIntoZone(testCase)
 	actOut = testCase.TestData.dut(input);
 	verifyEqual(testCase, actOut, true);
 end
+
+function testObstacleMovingInAndOutZone(testCase)
+	px = -testCase.TestData.dut.RADIUS;
+	py = -testCase.TestData.dut.RADIUS;
+	vx = -px/testCase.TestData.dut.TIME_THRESHOLD*10;
+	vy = -py/testCase.TestData.dut.TIME_THRESHOLD*10;
+	input = struct('px', px, 'py', py, 'vx', vx, 'vy', vy, 'tracking', true);
+	actOut = testCase.TestData.dut(input);
+	verifyEqual(testCase, actOut, true);
+end
