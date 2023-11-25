@@ -6,14 +6,22 @@ function setup(testCase)
 	testCase.TestData.dut = zoneCheck();
 end
 
-function testObstacleInZone(testCase)
-	input = struct('px', 0, 'py', 0, 'vx', 0, 'vy', 0, 'tracking', true);
+function testObstacleStationaryInsideZone(testCase)
+	px = 0;
+	py = 0;
+	vx = 0;
+	vy = 0;
+	input = struct('px', px, 'py', py, 'vx', vx, 'vy', vy, 'tracking', true);
 	actOut = testCase.TestData.dut(input);
 	verifyEqual(testCase, actOut, true);
 end
 
-function testObstacleOnBorder(testCase)
-	input = struct('px', testCase.TestData.dut.RADIUS, 'py', 0, 'vx', 0, 'vy', 0, 'tracking', true);
+function testObstacleStationaryOnBorder(testCase)
+	px = testCase.TestData.dut.RADIUS;
+	py = 0;
+	vx = 0;
+	vy = 0;
+	input = struct('px', px, 'py', py, 'vx', vx, 'vy', vy, 'tracking', true);
 	actOut = testCase.TestData.dut(input);
 	verifyEqual(testCase, actOut, true);
 end
@@ -56,16 +64,6 @@ function testObstacleMovingOutsideZone(testCase)
 	input = struct('px', px, 'py', py, 'vx', vx, 'vy', vy, 'tracking', true);
 	actOut = testCase.TestData.dut(input);
 	verifyEqual(testCase, actOut, false);
-end
-
-function testObstacleStationaryInsideZone(testCase)
-	px = 0;
-	py = 0;
-	vx = 0;
-	vy = 0;
-	input = struct('px', px, 'py', py, 'vx', vx, 'vy', vy, 'tracking', true);
-	actOut = testCase.TestData.dut(input);
-	verifyEqual(testCase, actOut, true);
 end
 
 function testObstacleStationaryOutsideZone(testCase)
