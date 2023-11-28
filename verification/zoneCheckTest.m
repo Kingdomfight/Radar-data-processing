@@ -75,3 +75,18 @@ function testObstacleStationaryOutsideZone(testCase)
 	actOut = testCase.TestData.dut(input);
 	verifyEqual(testCase, actOut, false);
 end
+
+function testMultipleInputsInZone(testCase)
+	px(1) = testCase.TestData.dut.RADIUS*2;
+	py(1) = testCase.TestData.dut.RADIUS*2;
+	px(2) = 0;
+	py(2) = 0;
+	vx = 0;
+	vy = 0;
+	singleInput(1) = struct('px', px(1), 'py', py(1), 'vx', vx, 'vy', vy, 'tracking', true);
+	singleInput(2) = struct('px', px(2), 'py', py(2), 'vx', vx, 'vy', vy, 'tracking', true);
+	input(1:7) = repmat(singleInput(1), 1, 7);
+	input(8) = singleInput(2);
+	actOut = testCase.TestData.dut(input);
+	verifyEqual(testCase, actOut, true);
+end
