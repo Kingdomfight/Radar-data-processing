@@ -23,7 +23,7 @@ classdef getClosestObject < matlab.System
 
 	% Pre-computed constants
 	properties (Access = private)
-		condition = @(obj) obj.tracking;
+
 	end
 
 	properties (Constant = true)
@@ -43,7 +43,7 @@ classdef getClosestObject < matlab.System
 			end
 
 			% Get tracked obstacles
-			trackedObs = trackedObs(arrayfun(obj.condition, trackedObs));
+			trackedObs = trackedObs(arrayfun(@(obj) obj.tracking, trackedObs));
 
 			if size(trackedObs, 2) == 0
 				c = uint8(0);
