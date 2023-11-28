@@ -4,8 +4,8 @@ classdef getClosestObject < matlab.System
 	% Input trackedObs is an vector of MAX_INPUT_OBSTACLES structs containing at
 	% least the following fields:
 	%   tracking: logical type used to check if obstacle is being tracked or not.
-	%   pxExt: extrapolated x coordinate.
-	%   pyExt: extrapolated y coordinate.
+	%   px: x coordinate.
+	%   py: y coordinate.
 	% Input detectObs is a struct containing at elast the following fields:
 	%   px: x coordinate of detected obstacle
 	%   py: y coordinate of detected obstacle
@@ -48,8 +48,8 @@ classdef getClosestObject < matlab.System
 			if size(trackedObs, 2) == 0
 				c = uint8(0);
 			else
-				dx = [trackedObs.pxExt]-detectObs.px;
-				dy = [trackedObs.pyExt]-detectObs.py;
+				dx = [trackedObs.px]-detectObs.px;
+				dy = [trackedObs.py]-detectObs.py;
 				obstacleDistance = sqrt(dx.^2+dy.^2);
 				[~, index] = min(obstacleDistance);
 				c = bitshift(uint8(1), index-1);
