@@ -47,5 +47,17 @@ classdef polarToCart < matlab.System
 		function resetImpl(~)
 			% Initialize / reset discrete-state properties
 		end
+
+		function sizeOut = getOutputSizeImpl(~)
+			sizeOut = [1 1];
+		end
+
+		function fixedOut = isOutputFixedSizeImpl(~)
+			fixedOut = true;
+		end
+
+		function dataOut = getOutputDataTypeImpl(~)
+			dataOut = 'cartBus';
+		end
 	end
 end

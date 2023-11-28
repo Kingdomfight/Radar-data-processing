@@ -50,7 +50,7 @@ classdef getClosestObject < matlab.System
 			end
 
 			% Get tracked obstacles
-			trackedObs = trackedObs(arrayfun(@(obj) obj.tracking, trackedObs));
+			trackedObs = trackedObs(arrayfun(@(elem) elem.tracking, trackedObs));
 
 			if size(trackedObs, 2) == 0
 				c = uint8(0);
@@ -65,6 +65,18 @@ classdef getClosestObject < matlab.System
 
 		function resetImpl(~)
 			% Initialize / reset discrete-state properties
+		end
+
+		function sizeOut = getOutputSizeImpl(~)
+			sizeOut = [1 1];
+		end
+
+		function fixedOut = isOutputFixedSizeImpl(~)
+			fixedOut = true;
+		end
+
+		function dataOut = getOutputDataTypeImpl(~)
+			dataOut = 'uint8';
 		end
 	end
 end

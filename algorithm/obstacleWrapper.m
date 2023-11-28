@@ -57,5 +57,17 @@ classdef obstacleWrapper < matlab.System
 				obj.obstacles{i} = obstacleTracker;
 			end
 		end
+
+		function sizeOut = getOutputSizeImpl(obj)
+			sizeOut = [1 obj.NUM_OBSTACLE_TRACKER];
+		end
+
+		function fixedOut = isOutputFixedSizeImpl(~)
+			fixedOut = true;
+		end
+
+		function dataOut = getOutputDataTypeImpl(~)
+			dataOut = 'fullBus';
+		end
 	end
 end
