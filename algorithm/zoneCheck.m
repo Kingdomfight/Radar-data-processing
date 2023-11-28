@@ -37,12 +37,12 @@ classdef zoneCheck < matlab.System
 		end
 
 		function warning = stepImpl(obj, obsState)
-			% Format input into struct of arrays
-			input.px = [obsState.px];
-			input.py = [obsState.py];
-			input.vx = [obsState.vx];
-			input.vy = [obsState.vy];
+			% Format input into struct of arrays and ignore untracked obstacles
 			input.tracking = [obsState.tracking];
+			input.px = [obsState(input.tracking).px];
+			input.py = [obsState(input.tracking).py];
+			input.vx = [obsState(input.tracking).vx];
+			input.vy = [obsState(input.tracking).vy];
 			% Avoid divide by zero condition
 			input.vx = input.vx + eps(0.^input.vx);
 			input.vy = input.vy + eps(0.^input.vy);

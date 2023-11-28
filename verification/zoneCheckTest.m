@@ -16,6 +16,16 @@ function testObstacleStationaryInsideZone(testCase)
 	verifyEqual(testCase, actOut, true);
 end
 
+function testUntrackedObstacleInsideZone(testCase)
+	px = 0;
+	py = 0;
+	vx = 0;
+	vy = 0;
+	input = struct('px', px, 'py', py, 'vx', vx, 'vy', vy, 'tracking', false);
+	actOut = testCase.TestData.dut(input);
+	verifyEqual(testCase, actOut, false);
+end
+
 function testObstacleStationaryOnBorder(testCase)
 	px = testCase.TestData.dut.RADIUS;
 	py = 0;
