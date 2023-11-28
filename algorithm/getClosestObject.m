@@ -40,6 +40,13 @@ classdef getClosestObject < matlab.System
 			if (size(trackedObs, 2) > obj.MAX_INPUT_OBSTACLES)
 				error('getClosestObject:InputIncorrectDimensions', ...
 					'trackedObs must be a vector of at most 8 elements')
+			elseif (~isfield(trackedObs, 'px') || ~isfield(trackedObs, 'py') ...
+				|| ~isfield(trackedObs, 'tracking'))
+				error('getClosestObject:InputIncorrectFields', ...
+				'trackedObs must be a structure array containing fields px, py, and tracking')
+			elseif (~isfield(detectObs, 'px') || ~isfield(detectObs, 'py'))
+				error('getClosestObject:InputIncorrectFields', ...
+				'detectObs must be a struct containing fields px and py')
 			end
 
 			% Get tracked obstacles

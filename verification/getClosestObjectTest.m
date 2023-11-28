@@ -33,6 +33,23 @@ function test2ManyObjects(testCase)
 	verifyError(testCase, functionHandle, 'getClosestObject:InputIncorrectDimensions');
 end
 
+function testIncorrectFields(testCase)
+	detect = struct('px', 0, 'py', 0);
+	tracked = struct('px', 0, 'py', 0, 'wrong', false);
+	functionHandle = @() testCase.TestData.dut(tracked, detect);
+	verifyError(testCase, functionHandle, 'getClosestObject:InputIncorrectFields');
+	tracked = struct('px', 0, 'wrong', 0, 'tracked', false);
+	functionHandle = @() testCase.TestData.dut(tracked, detect);
+	verifyError(testCase, functionHandle, 'getClosestObject:InputIncorrectFields');
+	tracked = struct('wrong', 0, 'py', 0, 'tracked', false);
+	functionHandle = @() testCase.TestData.dut(tracked, detect);
+	verifyError(testCase, functionHandle, 'getClosestObject:InputIncorrectFields');
+	tracked = struct('px', 0, 'py', 0, 'tracked', false);
+	detect = struct('px', 0, 'wrong', 0);
+	functionHandle = @() testCase.TestData.dut(tracked, detect);
+	verifyError(testCase, functionHandle, 'getClosestObject:InputIncorrectFields');
+end
+
 function testClosestObject(testCase)
 	% Make sure input data is constant between test runnings.
 	rng("default")
