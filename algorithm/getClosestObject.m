@@ -78,5 +78,9 @@ classdef getClosestObject < matlab.System
 		function dataOut = getOutputDataTypeImpl(~)
 			dataOut = 'uint8';
 		end
+
+		function complexOut = isOutputComplexImpl(~)
+			complexOut = false;
+		end
 	end
 end

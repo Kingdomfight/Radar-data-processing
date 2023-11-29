@@ -38,28 +38,28 @@ classdef zoneCheck < matlab.System
 
 		function warning = stepImpl(obj, obsState)
 			% Format input into struct of arrays and ignore untracked obstacles
-			input.tracking = [obsState.tracking];
-			input.px = [obsState(input.tracking).px];
-			input.py = [obsState(input.tracking).py];
-			input.vx = [obsState(input.tracking).vx];
-			input.vy = [obsState(input.tracking).vy];
+			tracking = [obsState.tracking];
+			px = [obsState(tracking).px];
+			py = [obsState(tracking).py];
+			vx = [obsState(tracking).vx];
+			vy = [obsState(tracking).vy];
 			% Avoid divide by zero condition
-			input.vx = input.vx + eps(0.^input.vx);
-			input.vy = input.vy + eps(0.^input.vy);
+			vx = vx + eps(0.^vx);
+			vy = vy + eps(0.^vy);
 			% Check if obstacle already in zone
-			if (any(sqrt(input.px.^2 + input.py.^2) <= obj.RADIUS))
+			if (any(sqrt(px.^2 + py.^2) <= obj.RADIUS))
 				warning = true;
 			else
-				a = input.vy./input.vx;
-				b = input.py - input.px.*a;
+				a = vy./vx;
+				b = py - px.*a;
 				% Calculate discriminant system of equations of line and 
 				% circle x^2+y^2=RADIUS^2
 				D = 4*((a*obj.RADIUS).^2 - b.^2 + obj.RADIUS^2);
 
 				x1 = (-2*a.*b + sqrt(D))./(2*a.^2 + 2);
 				x2 = (-2*a.*b - sqrt(D))./(2*a.^2 + 2);
-				t1 = (x1 - input.px)./input.vx;
-				t2 = (x2 - input.px)./input.vx;
+				t1 = (x1 - px)./vx;
+				t2 = (x2 - px)./vx;
 
 				cond1 = arrayfun(@(time1) isreal(time1) && time1 < obj.TIME_THRESHOLD && time1 >= 0, t1);
 				cond2 = arrayfun(@(time2) isreal(time2) && time2 < obj.TIME_THRESHOLD && time2 >= 0, t2);
@@ -69,6 +69,18 @@ classdef zoneCheck < matlab.System
 
 		function resetImpl(~)
 			% Initialize / reset discrete-state properties
+		end
+
+		function sizeOut = getOutputSizeImpl(~)
+			sizeOut = [1 1];
+		end
+
+		function fixedOut = isOutputFixedSizeImpl(~)
+			fixedOut = true;
+		end
+
+		function dataOut = getOutputDataTypeImpl(~)
+			dataOut = 'logical';
 		end
 	end
 end

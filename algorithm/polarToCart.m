@@ -57,7 +57,11 @@ classdef polarToCart < matlab.System
 		end
 
 		function dataOut = getOutputDataTypeImpl(~)
-			dataOut = 'cartBus';
+			dataOut = 'Bus: cartBus';
+		end
+
+		function complexOut = isOutputComplexImpl(~)
+			complexOut = false;
 		end
 	end
 end

@@ -67,7 +67,11 @@ classdef obstacleWrapper < matlab.System
 		end
 
 		function dataOut = getOutputDataTypeImpl(~)
-			dataOut = 'fullBus';
+			dataOut = 'Bus: obstacleBus';
+		end
+
+		function complexOut = isOutputComplexImpl(~)
+			complexOut = false;
 		end
 	end
 end

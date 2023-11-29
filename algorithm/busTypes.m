@@ -7,7 +7,7 @@ cartBus.Elements = elems;
 elems(3).Name = 'vx';
 elems(4).Name = 'vy';
 elems(5).Name = 'tracking';
-elems(5).DataType = 'logical';
+elems(5).DataType = 'boolean';
 obstacleBus = Simulink.Bus;
 obstacleBus.Elements = elems;
 
