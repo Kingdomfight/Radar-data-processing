@@ -16,12 +16,12 @@ classdef obstacleWrapper < matlab.System
 	end
 
 	properties (DiscreteState)
-		obstacles;
+
 	end
 
 	% Pre-computed constants
 	properties (Access = private)
-
+		obstacles;
 	end
 
 	properties (Constant = true)
