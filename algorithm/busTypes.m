@@ -1,3 +1,4 @@
+clearvars elems obstacleBus cartbus
 elems(1) = Simulink.BusElement;
 elems(1).Name = 'px';
 elems(2).Name = 'py';
