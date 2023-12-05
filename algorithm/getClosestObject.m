@@ -49,15 +49,17 @@ classdef getClosestObject < matlab.System
 				'detectObs must be a struct containing fields px and py')
 			end
 
-			% Get tracked obstacles
-			trackedObs = trackedObs(arrayfun(@(elem) elem.tracking, trackedObs));
-
-			if size(trackedObs, 2) == 0
+			if all([trackedObs(:).tracking] == false)
 				c = uint8(0);
 			else
-				dx = [trackedObs.px]-detectObs.px;
-				dy = [trackedObs.py]-detectObs.py;
-				obstacleDistance = sqrt(dx.^2+dy.^2);
+				obstacleDistance = ones(1, obj.MAX_INPUT_OBSTACLES)*realmax;
+				for i=1:obj.MAX_INPUT_OBSTACLES
+					if trackedObs(i).tracking
+						dx = [trackedObs(i).px]-detectObs.px;
+						dy = [trackedObs(i).py]-detectObs.py;
+						obstacleDistance(i) = sqrt(dx.^2+dy.^2);
+					end
+				end
 				[~, index] = min(obstacleDistance);
 				c = bitshift(uint8(1), index-1);
 			end
