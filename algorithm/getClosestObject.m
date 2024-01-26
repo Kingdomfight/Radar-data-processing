@@ -36,32 +36,19 @@ classdef getClosestObject < matlab.System
 		end
 
 		function c = stepImpl(obj, trackedObs, detectObs)
-			% Input checking
-			if (size(trackedObs, 2) > obj.MAX_INPUT_OBSTACLES)
-				error('getClosestObject:InputIncorrectDimensions', ...
-					'trackedObs must be a vector of at most 8 elements')
-			elseif (~isfield(trackedObs, 'px') || ~isfield(trackedObs, 'py') ...
-				|| ~isfield(trackedObs, 'tracking'))
-				error('getClosestObject:InputIncorrectFields', ...
-				'trackedObs must be a structure array containing fields px, py, and tracking')
-			elseif (~isfield(detectObs, 'px') || ~isfield(detectObs, 'py'))
-				error('getClosestObject:InputIncorrectFields', ...
-				'detectObs must be a struct containing fields px and py')
-			end
-
 			if all([trackedObs(:).tracking] == false)
 				c = uint8(0);
 			else
-				obstacleDistance = ones(1, obj.MAX_INPUT_OBSTACLES)*realmax;
-				for i=1:obj.MAX_INPUT_OBSTACLES
+				obstacleDistance = ones(1, obj.MAX_INPUT_OBSTACLES) * realmax;
+				for i=obj.MAX_INPUT_OBSTACLES:-1:1
 					if trackedObs(i).tracking
-						dx = [trackedObs(i).px]-detectObs.px;
-						dy = [trackedObs(i).py]-detectObs.py;
-						obstacleDistance(i) = sqrt(dx.^2+dy.^2);
+						dx = trackedObs(i).px - detectObs.px;
+						dy = trackedObs(i).py - detectObs.py;
+						obstacleDistance(i) = sqrt(dx^2 + dy^2);
 					end
 				end
 				[~, index] = min(obstacleDistance);
-				c = bitshift(uint8(1), index-1);
+				c = bitshift(uint8(1), index - 1);
 			end
 		end
 
