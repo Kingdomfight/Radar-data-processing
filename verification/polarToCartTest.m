@@ -51,18 +51,3 @@ function testDistance(testCase)
 	verifyLessThan(testCase, errPx, eps(single(1)));
 	verifyLessThan(testCase, errPy, eps(single(1)));
 end
-
-% Test first too small angle
-function testAngle2Small(testCase)
-	verifyError(testCase, @() testCase.TestData.dut(-eps, 1), 'MATLAB:validators:mustBeInRange')
-end
-
-% Test first too large angle
-function testAngle2Large(testCase)
-	verifyError(testCase, @() testCase.TestData.dut(360, 1), 'MATLAB:validators:mustBeInRange')
-end
-
-% Test first negative distance
-function testDistanceNegative(testCase)
-	verifyError(testCase, @() testCase.TestData.dut(45, -eps), 'MATLAB:validators:mustBeNonnegative')
-end

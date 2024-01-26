@@ -26,13 +26,6 @@ classdef resolverDecoder < matlab.System
 		end
 
 		function angle = stepImpl(~, sine, cosine)
-			% Input checking
-			arguments
-				~
-				sine (1,1) {mustBeInRange(sine, -1, 1)}
-				cosine (1,1) {mustBeInRange(cosine, -1, 1)}
-			end
-
 			angle = cordicatan2(sine, cosine);
 			angle = angle*(180/pi);
 			if angle < 0

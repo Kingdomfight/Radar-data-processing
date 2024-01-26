@@ -25,13 +25,6 @@ classdef polarToCart < matlab.System
 		end
 
 		function out = stepImpl(~, angle, distance)
-			% Input checking
-			arguments
-				~
-				angle (1,1) {mustBeInRange(angle, 0, 360, 'exclude-upper')}
-				distance (1,1) {mustBeNonnegative}
-			end
-
 			angle = angle*(pi/180);
 			[sine, cosine] = cordicsincos(angle);
 
