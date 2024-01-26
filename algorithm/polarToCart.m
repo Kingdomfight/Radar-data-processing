@@ -2,11 +2,8 @@ classdef polarToCart < matlab.System
 	% System object to convert polar coordinates (angle & distance) to
 	% cartesian coordinates (out.px & out.py) for a 2D plane.
 	%
-	% Input angle is in degrees (0 <= degrees < 360)
-	% Input distance is nonnegative
-	%
-	% This template includes the minimum set of functions required
-	% to define a System object with discrete state.
+	% Input angle in degrees in interval [0, 360)
+	% Input distance is in interval [0, inf)
 
 	% Public, tunable properties
 	properties
@@ -28,20 +25,18 @@ classdef polarToCart < matlab.System
 		end
 
 		function out = stepImpl(~, angle, distance)
-			% Implement algorithm. Calculate y as a function of input u and
-			% discrete states.
-
 			% Input checking
-			if (angle < 0 || angle >= 360)
-				error('polarToCart:InputOutOfRange', ...
-					'Angle must be >=0 and <360.')
-			elseif (distance < 0)
-				error('polarToCart:InputOutOfRange', ...
-					'Distance must be nonnegative');
+			arguments
+				~
+				angle (1,1) {mustBeInRange(angle, 0, 360, 'exclude-upper')}
+				distance (1,1) {mustBeNonnegative}
 			end
 
-			out.px = cosd(angle)*distance;
-			out.py = sind(angle)*distance;
+			angle = angle*(pi/180);
+			[sine, cosine] = cordicsincos(angle);
+
+			out.px = cosine*distance;
+			out.py = sine*distance;
 		end
 
 		function resetImpl(~)
