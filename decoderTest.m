@@ -34,7 +34,10 @@ output = mod(output, 2*pi);
 correction = interp1(w,phi,1);
 output = output + correction;
 
-error = output - theta;
+error1 = abs(output - theta);
+error2 = abs(output - theta + 2*pi);
+error3 = abs(output - theta - 2*pi);
+error = min([error1;error2;error3],[],1);
 
 figure
 tiledlayout(6,1)
