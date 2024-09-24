@@ -1,15 +1,25 @@
-clearvars -except Num
+clear
 
-E0 = 5;
-w = 400*2*pi;
-T = 0.5;
 fs = 10e3;
-t = 0:1/fs:2;
-theta = pi*sawtooth(2*pi*t) + pi;
+tstop = 2;
+t = 0:1/fs:tstop;
 
-Vr = E0*sin(w*t);
-Vc = E0*sin(w*t)*T.*cos(theta);
-Vs = E0*sin(w*t)*T.*sin(theta);
+simConfig = Simulink.SimulationInput('radarModel');
+simConfig = simConfig.setModelParameter(StopTime=string(tstop));
+simConfig = simConfig.setModelParameter(FixedStep=string(1/fs));
+out = sim(simConfig);
+theta = getdatasamples(out.yout{1}.Values, 1:numel(t))';
+Vr = getdatasamples(out.yout{2}.Values.Vp, 1:numel(t))';
+Vc = getdatasamples(out.yout{2}.Values.Vx, 1:numel(t))';
+Vs = getdatasamples(out.yout{2}.Values.Vy, 1:numel(t))';
+
+Fpass = 10;
+Fstop = 700;
+Apass = 1;
+Astop = 80;
+filterSpecs = fdesign.lowpass(Fpass,Fstop,Apass,Astop,fs);
+filterDesign = design(filterSpecs, 'Systemobject', true);
+Num = filterDesign.Numerator(:);
 
 Vcr = Vc.*Vr;
 filteredCosine = filter(Num,1, Vcr);
@@ -20,7 +30,8 @@ filteredSine = filter(Num,1,Vsr);
 output = atan2(filteredSine, filteredCosine);
 output = mod(output, 2*pi);
 
-correction = 0.0113;
+[phi, w] = phasedelay(filterDesign, 8192*2, fs);
+correction = interp1(w,phi,1);
 output = output + correction;
 
 error = output - theta;
