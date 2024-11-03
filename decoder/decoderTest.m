@@ -1,15 +1,17 @@
 clear
 
-fs = 10e3;
-tstop = 2;
-t = 0:1/fs:tstop;
-bias_error = 0;
+simFreq = 10e3;
+simStepTime = 1/simFreq;
+simStopTime = 2;
+t = 0:simStepTime:simStopTime;
+biasError = 0;
 
 simConfig = Simulink.SimulationInput('radarModel');
-simConfig = simConfig.setModelParameter(StopTime=string(tstop));
-simConfig = simConfig.setModelParameter(FixedStep=string(1/fs));
-simConfig = simConfig.setBlockParameter('radarModel/noise/vx_bias', 'Bias', string(bias_error));
-simConfig = simConfig.setBlockParameter('radarModel/noise/vy_bias', 'Bias', string(bias_error));
+simConfig = simConfig.setModelParameter(SolverType="Fixed-step");
+simConfig = simConfig.setModelParameter(FixedStep=string(simStepTime));
+simConfig = simConfig.setModelParameter(StopTime=string(simStopTime));
+simConfig = simConfig.setBlockParameter('radarModel/noise/vx_bias', 'Bias', string(biasError));
+simConfig = simConfig.setBlockParameter('radarModel/noise/vy_bias', 'Bias', string(biasError));
 out = sim(simConfig);
 theta = getdatasamples(out.yout{1}.Values, 1:numel(t))';
 Vr = getdatasamples(out.yout{2}.Values.Vp, 1:numel(t))';
@@ -20,7 +22,7 @@ Fpass = 10;
 Fstop = 700;
 Apass = 1;
 Astop = 80;
-filterSpecs = fdesign.lowpass(Fpass,Fstop,Apass,Astop,fs);
+filterSpecs = fdesign.lowpass(Fpass,Fstop,Apass,Astop,simFreq);
 filterDesign = design(filterSpecs, 'Systemobject', true);
 Num = filterDesign.Numerator(:);
 
@@ -33,7 +35,7 @@ filteredSine = filter(Num,1,Vsr);
 output = atan2(filteredSine, filteredCosine);
 output = mod(output, 2*pi);
 
-[phi, w] = phasedelay(filterDesign, 8192*2, fs);
+[phi, w] = phasedelay(filterDesign, 8192*2, simFreq);
 correction = interp1(w,phi,1);
 output = output + correction;
 
@@ -76,7 +78,7 @@ title('Error')
 figure
 tiledlayout(4,1)
 L = size(t,2)-1;
-freq = fs/L*(-L/2:L/2);
+freq = simFreq/L*(-L/2:L/2);
 
 nexttile
 Xcr = fftshift(fft(Vcr));
