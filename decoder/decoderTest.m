@@ -3,15 +3,18 @@ clear
 fs = 10e3;
 tstop = 2;
 t = 0:1/fs:tstop;
+bias_error = 0;
 
 simConfig = Simulink.SimulationInput('radarModel');
 simConfig = simConfig.setModelParameter(StopTime=string(tstop));
 simConfig = simConfig.setModelParameter(FixedStep=string(1/fs));
+simConfig = simConfig.setBlockParameter('radarModel/noise/vx_bias', 'Bias', string(bias_error));
+simConfig = simConfig.setBlockParameter('radarModel/noise/vy_bias', 'Bias', string(bias_error));
 out = sim(simConfig);
 theta = getdatasamples(out.yout{1}.Values, 1:numel(t))';
 Vr = getdatasamples(out.yout{2}.Values.Vp, 1:numel(t))';
-Vc = getdatasamples(out.yout{2}.Values.Vx, 1:numel(t))';
-Vs = getdatasamples(out.yout{2}.Values.Vy, 1:numel(t))';
+Vc = getdatasamples(out.yout{2}.Values.Vx_noisy, 1:numel(t))';
+Vs = getdatasamples(out.yout{2}.Values.Vy_noisy, 1:numel(t))';
 
 Fpass = 10;
 Fstop = 700;
